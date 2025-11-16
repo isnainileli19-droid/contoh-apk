@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="id" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembelajaran Bahasa Arab Kelas XI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chapter-card:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+        .profile-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .upload-area.dragover {
+            border-color: #10b981;
+            background: #f0fdf4;
+            transform: scale(1.02);
+        }
+        .media-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .media-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8fafc;
+        }
+        .play-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #10b981;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .play-btn:hover {
+            background: #059669;
+        }
+        .play-btn.playing {
+            background: #dc2626;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #10b981;
+            width: 0%;
+            transition: width 0.1s;
+        }
+        .time-display {
+            font-size: 12px;
+            color: #64748b;
+            min-width: 80px;
+            text-align: center;
+        }
+        .custom-video-player {
+            position: relative;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .custom-video-player video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        .custom-video-player:hover .video-overlay {
+            transform: translateY(0);
+        }
+        .volume-slider {
+            width: 60px;
+        }
+        .link-preview {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full bg-gradient-to-br from-emerald-50 to-teal-100 font-sans">
+  <div id="app" class="h-full flex flex-col"><!-- Home Screen -->
+   <div id="homeScreen" class="fade-in h-full flex flex-col">
+    <header class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-6 text-center shadow-lg">
+     <div class="flex items-center justify-center mb-4">
+      <svg class="w-12 h-12 mr-3" fill="currentColor" viewbox="0 0 24 24"><path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
+      </svg>
+      <h1 id="appTitle" class="text-3xl font-bold">Bahasa Arab Kelas XI</h1>
+     </div>
+     <p id="welcomeText" class="text-emerald-100 text-lg">Selamat datang di pembelajaran Bahasa Arab</p>
+    </header>
+    <main class="flex-1 flex items-center justify-center p-8">
+     <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full">
+      <div class="text-center mb-8">
+       <svg class="w-20 h-20 mx-auto mb-4 text-emerald-600" fill="currentColor" viewbox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z" />
+       </svg>
+       <h2 class="text-2xl font-bold text-gray-800 mb-2">Mari Belajar!</h2>
+       <p class="text-gray-600">Pilih menu untuk memulai pembelajaran</p>
+      </div>
+      <div class="space-y-4"><button onclick="showChapterMenu()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-4 px-6 rounded-xl transition duration-200 flex items-center justify-center">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M8 5v14l11-7z" />
+        </svg> Start </button> <button onclick="showExitConfirm()" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-semibold py-4 px-6 rounded-xl transition duration-200 flex items-center justify-center">
+        <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+        </svg> Exit </button>
+      </div>
+     </div>
+    </main>
+   </div><!-- Chapter Menu Screen -->
+   <div id="chapterScreen" class="fade-in h-full flex-col hidden">
+    <header class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 shadow-lg">
+     <div class="flex items-center justify-between"><button onclick="showHome()" class="flex items-center text-emerald-100 hover:text-white transition">
+       <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+       </svg> Kembali </button>
+      <h1 class="text-xl font-bold">Menu Pembelajaran</h1>
+      <div class="w-16"></div>
+     </div>
+    </header>
+    <main class="flex-1 p-6 overflow-y-auto">
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"><!-- Bab 1 -->
+      <div class="chapter-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showChapterDetail('bab1', 'Tasawuq', '🛒')">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         🛒
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Bab 1</h3>
+        <p class="text-emerald-600 font-semibold">Tasawuq</p>
+        <p class="text-gray-500 text-sm mt-1">Berbelanja</p>
+       </div>
+      </div><!-- Bab 2 -->
+      <div class="chapter-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showChapterDetail('bab2', 'Safar', '✈️')">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         ✈️
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Bab 2</h3>
+        <p class="text-emerald-600 font-semibold">Safar</p>
+        <p class="text-gray-500 text-sm mt-1">Perjalanan</p>
+       </div>
+      </div><!-- Bab 3 -->
+      <div class="chapter-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showChapterDetail('bab3', 'Sihah', '🏥')">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         🏥
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Bab 3</h3>
+        <p class="text-emerald-600 font-semibold">Sihah</p>
+        <p class="text-gray-500 text-sm mt-1">Kesehatan</p>
+       </div>
+      </div><!-- Bab 4 -->
+      <div class="chapter-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showChapterDetail('bab4', 'Al Jaami\'ah', '🎓')">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         🎓
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Bab 4</h3>
+        <p class="text-emerald-600 font-semibold">Al Jaami'ah</p>
+        <p class="text-gray-500 text-sm mt-1">Universitas</p>
+       </div>
+      </div><!-- Bab 5 -->
+      <div class="chapter-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showChapterDetail('bab5', 'Haj wal Umroh', '🕋')">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         🕋
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Bab 5</h3>
+        <p class="text-emerald-600 font-semibold">Haj wal Umroh</p>
+        <p class="text-gray-500 text-sm mt-1">Haji dan Umrah</p>
+       </div>
+      </div><!-- Bab 6 -->
+      <div class="chapter-card bg-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showChapterDetail('bab6', 'Al Tiknulujiya', '💻')">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         💻
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Bab 6</h3>
+        <p class="text-emerald-600 font-semibold">Al Tiknulujiya</p>
+        <p class="text-gray-500 text-sm mt-1">Teknologi</p>
+       </div>
+      </div><!-- Evaluasi -->
+      <div class="chapter-card bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showEvaluation()">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         📝
+        </div>
+        <h3 class="text-lg font-bold mb-2">Evaluasi</h3>
+        <p class="text-orange-100">Uji pemahaman semua bab</p>
+       </div>
+      </div><!-- Profil -->
+      <div class="chapter-card bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showProfile()">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         👥
+        </div>
+        <h3 class="text-lg font-bold mb-2">Profil</h3>
+        <p class="text-purple-100">Profil Pengajar</p>
+       </div>
+      </div><!-- Back Button -->
+      <div class="chapter-card bg-gray-500 hover:bg-gray-600 text-white rounded-xl shadow-lg p-6 cursor-pointer" onclick="showHome()">
+       <div class="text-center">
+        <div class="text-4xl mb-3">
+         🏠
+        </div>
+        <h3 class="text-lg font-bold mb-2">Back</h3>
+        <p class="text-gray-200">Ke Halaman Utama</p>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- Chapter Detail Screen -->
+   <div id="chapterDetailScreen" class="fade-in h-full flex-col hidden">
+    <header class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 shadow-lg">
+     <div class="flex items-center justify-between"><button onclick="showChapterMenu()" class="flex items-center text-emerald-100 hover:text-white transition">
+       <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+       </svg> Kembali </button>
+      <div class="text-center">
+       <div id="chapterIcon" class="text-2xl mb-1">
+        🛒
+       </div>
+       <h1 id="chapterTitle" class="text-lg font-bold">Tasawuq</h1>
+      </div>
+      <div class="w-16"></div>
+     </div>
+    </header>
+    <main class="flex-1 p-6 overflow-y-auto">
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"><button onclick="showSection('mufrodat')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-200">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         📚
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Mufrodat</h3>
+        <p class="text-gray-600">Kosakata &amp; Gambar</p>
+       </div></button> <button onclick="showSection('hiwar')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-200">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         💬
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Hiwar</h3>
+        <p class="text-gray-600">Video Percakapan</p>
+       </div></button> <button onclick="showSection('audio')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-200">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         🎵
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Audio</h3>
+        <p class="text-gray-600">Materi Audio</p>
+       </div></button> <button onclick="showSection('materi')" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition duration-200">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         📄
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Materi Teks</h3>
+        <p class="text-gray-600">Teks &amp; Gambar</p>
+       </div></button>
+     </div>
+    </main>
+   </div><!-- Section Detail Screen -->
+   <div id="sectionScreen" class="fade-in h-full flex-col hidden">
+    <header class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-4 shadow-lg">
+     <div class="flex items-center justify-between"><button onclick="goBackToChapter()" class="flex items-center text-emerald-100 hover:text-white transition">
+       <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+       </svg> Kembali </button>
+      <h1 id="sectionTitle" class="text-lg font-bold">Mufrodat</h1>
+      <div class="w-16"></div>
+     </div>
+    </header>
+    <main class="flex-1 p-6 overflow-y-auto">
+     <div class="max-w-4xl mx-auto"><!-- Upload Area -->
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+       <h3 class="text-lg font-bold text-gray-800 mb-4">Upload File</h3><!-- File Upload Area -->
+       <div id="uploadArea" class="upload-area p-8 text-center cursor-pointer" onclick="document.getElementById('fileInput').click()">
+        <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <p class="text-gray-600 mb-2">Klik untuk upload file atau drag &amp; drop</p>
+        <p id="uploadHint" class="text-sm text-gray-500">Upload gambar (JPG, PNG, GIF)</p>
+       </div><input type="file" id="fileInput" class="hidden" onchange="handleFileUpload(event)"> <!-- URL Input for Links -->
+       <div id="urlSection" class="mt-4 hidden">
+        <div class="flex gap-2"><input type="url" id="urlInput" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="Atau masukkan URL file"> <button onclick="handleUrlUpload()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition duration-200"> Upload URL </button>
+        </div>
+       </div><!-- Upload Progress -->
+       <div id="uploadProgress" class="mt-4 hidden">
+        <div class="bg-gray-200 rounded-full h-2">
+         <div id="progressBar" class="bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">Mengupload...</p>
+       </div>
+      </div><!-- Files List -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+       <h3 class="text-lg font-bold text-gray-800 mb-4">Daftar File</h3>
+       <div id="filesList" class="space-y-4">
+        <div class="text-center text-gray-500 py-8">
+         <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="currentColor" viewbox="0 0 24 24"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+         </svg>
+         <p>Belum ada file yang diupload</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- Evaluation Screen -->
+   <div id="evaluationScreen" class="fade-in h-full flex-col hidden">
+    <header class="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 shadow-lg">
+     <div class="flex items-center justify-between"><button onclick="showChapterMenu()" class="flex items-center text-orange-100 hover:text-white transition">
+       <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+       </svg> Kembali </button>
+      <h1 class="text-lg font-bold">Evaluasi</h1>
+      <div class="w-16"></div>
+     </div>
+    </header>
+    <main class="flex-1 p-6 overflow-y-auto">
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition duration-200" onclick="showEvaluationDetail('bab1', 'Tasawuq', '🛒')">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         🛒
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Evaluasi Bab 1</h3>
+        <p class="text-orange-600 font-semibold">Tasawuq</p>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition duration-200" onclick="showEvaluationDetail('bab2', 'Safar', '✈️')">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         ✈️
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Evaluasi Bab 2</h3>
+        <p class="text-orange-600 font-semibold">Safar</p>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition duration-200" onclick="showEvaluationDetail('bab3', 'Sihah', '🏥')">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         🏥
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Evaluasi Bab 3</h3>
+        <p class="text-orange-600 font-semibold">Sihah</p>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition duration-200" onclick="showEvaluationDetail('bab4', 'Al Jaami\'ah', '🎓')">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         🎓
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Evaluasi Bab 4</h3>
+        <p class="text-orange-600 font-semibold">Al Jaami'ah</p>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition duration-200" onclick="showEvaluationDetail('bab5', 'Haj wal Umroh', '🕋')">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         🕋
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Evaluasi Bab 5</h3>
+        <p class="text-orange-600 font-semibold">Haj wal Umroh</p>
+       </div>
+      </div>
+      <div class="bg-white rounded-xl shadow-lg p-6 cursor-pointer hover:shadow-xl transition duration-200" onclick="showEvaluationDetail('bab6', 'Al Tiknulujiya', '💻')">
+       <div class="text-center">
+        <div class="text-3xl mb-3">
+         💻
+        </div>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Evaluasi Bab 6</h3>
+        <p class="text-orange-600 font-semibold">Al Tiknulujiya</p>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- Evaluation Detail Screen -->
+   <div id="evaluationDetailScreen" class="fade-in h-full flex-col hidden">
+    <header class="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 shadow-lg">
+     <div class="flex items-center justify-between"><button onclick="showEvaluation()" class="flex items-center text-orange-100 hover:text-white transition">
+       <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+       </svg> Kembali </button>
+      <div class="text-center">
+       <div id="evalIcon" class="text-2xl mb-1">
+        🛒
+       </div>
+       <h1 id="evalTitle" class="text-lg font-bold">Evaluasi Tasawuq</h1>
+      </div>
+      <div class="w-16"></div>
+     </div>
+    </header>
+    <main class="flex-1 p-6 overflow-y-auto">
+     <div class="max-w-4xl mx-auto"><!-- Upload Form -->
+      <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+       <h3 class="text-lg font-bold text-gray-800 mb-4">Upload Link Evaluasi</h3>
+       <div class="flex gap-2"><input type="url" id="evalLinkInput" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="https://example.com/quiz"> <button onclick="handleEvalLinkUpload()" id="evalUploadBtn" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition duration-200"> <span id="evalUploadText">Upload</span> <span id="evalUploadSpinner" class="hidden ml-2">
+          <svg class="animate-spin h-4 w-4 inline" fill="none" viewbox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle> <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg></span> </button>
+       </div>
+      </div><!-- Evaluation Links List -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+       <h3 class="text-lg font-bold text-gray-800 mb-4">Daftar Link Evaluasi</h3>
+       <div id="evaluationList" class="space-y-4">
+        <div class="text-center text-gray-500 py-8">
+         <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="currentColor" viewbox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H6.9C4.01 7 1.9 9.11 1.9 12s2.11 5 5 5h4v-1.9H6.9c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9.1-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.89 0 5-2.11 5-5s-2.11-5-5-5z" />
+         </svg>
+         <p>Belum ada link evaluasi yang diupload</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- Profile Screen -->
+   <div id="profileScreen" class="fade-in h-full flex-col hidden">
+    <header class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white p-4 shadow-lg">
+     <div class="flex items-center justify-between"><button onclick="showChapterMenu()" class="flex items-center text-purple-100 hover:text-white transition">
+       <svg class="w-5 h-5 mr-2" fill="currentColor" viewbox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+       </svg> Kembali </button>
+      <h1 class="text-lg font-bold">Profil Pengajar</h1>
+      <div class="w-16"></div>
+     </div>
+    </header>
+    <main class="flex-1 p-6 overflow-y-auto">
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto"><!-- Profile 1 -->
+      <div class="profile-card text-white rounded-xl shadow-lg p-6">
+       <div class="text-center">
+        <div id="profile1Image" class="w-24 h-24 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center overflow-hidden">
+         <svg class="w-12 h-12 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+         </svg>
+        </div>
+        <h3 id="profile1Name" class="text-xl font-bold mb-2">Dr. Ahmad Fauzi</h3>
+        <p class="text-emerald-100 mb-4">Pengajar Bahasa Arab</p><button onclick="editProfile(1)" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200"> Edit Profil </button>
+       </div>
+      </div><!-- Profile 2 -->
+      <div class="profile-card text-white rounded-xl shadow-lg p-6">
+       <div class="text-center">
+        <div id="profile2Image" class="w-24 h-24 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center overflow-hidden">
+         <svg class="w-12 h-12 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+         </svg>
+        </div>
+        <h3 id="profile2Name" class="text-xl font-bold mb-2">Prof. Siti Aminah</h3>
+        <p class="text-emerald-100 mb-4">Pengajar Bahasa Arab</p><button onclick="editProfile(2)" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200"> Edit Profil </button>
+       </div>
+      </div><!-- Profile 3 -->
+      <div class="profile-card text-white rounded-xl shadow-lg p-6">
+       <div class="text-center">
+        <div id="profile3Image" class="w-24 h-24 mx-auto mb-4 bg-white bg-opacity-20 rounded-full flex items-center justify-center overflow-hidden">
+         <svg class="w-12 h-12 text-white" fill="currentColor" viewbox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+         </svg>
+        </div>
+        <h3 id="profile3Name" class="text-xl font-bold mb-2">Ustadz Muhammad Ali</h3>
+        <p class="text-emerald-100 mb-4">Pengajar Bahasa Arab</p><button onclick="editProfile(3)" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded-lg transition duration-200"> Edit Profil </button>
+       </div>
+      </div>
+     </div>
+    </main>
+   </div><!-- Exit Confirmation Modal -->
+   <div id="exitModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-6 max-w-sm mx-4">
+     <div class="text-center">
+      <svg class="w-12 h-12 mx-auto mb-4 text-red-500" fill="currentColor" viewbox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+      </svg>
+      <h3 class="text-lg font-bold text-gray-800 mb-2">Keluar Aplikasi?</h3>
+      <p class="text-gray-600 mb-6">Apakah Anda yakin ingin keluar dari aplikasi pembelajaran?</p>
+      <div class="flex space-x-3"><button onclick="hideExitConfirm()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-200"> Batal </button> <button onclick="exitApp()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"> Keluar </button>
+      </div>
+     </div>
+    </div>
+   </div><!-- Profile Edit Modal -->
+   <div id="profileEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl p-6 max-w-md mx-4 w-full">
+     <div class="text-center mb-6">
+      <h3 class="text-lg font-bold text-gray-800">Edit Profil Pengajar</h3>
+     </div>
+     <form id="profileEditForm" class="space-y-4">
+      <div><label for="profileName" class="block text-sm font-medium text-gray-700 mb-2">Nama Pengajar</label> <input type="text" id="profileName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" required>
+      </div>
+      <div><label for="profileImage" class="block text-sm font-medium text-gray-700 mb-2">URL Foto (Opsional)</label> <input type="url" id="profileImage" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="https://example.com/photo.jpg">
+       <p class="text-xs text-gray-500 mt-1">Masukkan URL gambar yang valid</p>
+      </div>
+      <div class="flex space-x-3 pt-4"><button type="button" onclick="hideProfileEdit()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-200"> Batal </button> <button type="submit" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"> Simpan </button>
+      </div>
+     </form>
+    </div>
+   </div>
+  </div>
+  <script>
+        // Global variables
+        let currentChapter = '';
+        let currentSection = '';
+        let currentEvalBab = '';
+        let files = [];
+        let recordCount = 0;
+        let currentEditingProfile = 0;
+        let profileImages = {};
+        let mediaPlayers = new Map();
+
+        // Default configuration
+        const defaultConfig = {
+            app_title: "Bahasa Arab Kelas XI",
+            welcome_text: "Selamat datang di pembelajaran Bahasa Arab",
+            profile1_name: "Dr. Ahmad Fauzi",
+            profile2_name: "Prof. Siti Aminah", 
+            profile3_name: "Ustadz Muhammad Ali"
+        };
+
+        // Data handler for SDK
+        const dataHandler = {
+            onDataChanged(data) {
+                files = data;
+                recordCount = data.length;
+                renderFiles();
+                renderEvaluationLinks();
+            }
+        };
+
+        // Initialize SDK
+        async function initializeApp() {
+            if (window.dataSdk) {
+                const initResult = await window.dataSdk.init(dataHandler);
+                if (!initResult.isOk) {
+                    console.error("Failed to initialize data SDK");
+                }
+            }
+
+            if (window.elementSdk) {
+                await window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (config) => {
+                        const appTitle = config.app_title || defaultConfig.app_title;
+                        const welcomeText = config.welcome_text || defaultConfig.welcome_text;
+                        const profile1Name = config.profile1_name || defaultConfig.profile1_name;
+                        const profile2Name = config.profile2_name || defaultConfig.profile2_name;
+                        const profile3Name = config.profile3_name || defaultConfig.profile3_name;
+                        
+                        document.getElementById('appTitle').textContent = appTitle;
+                        document.getElementById('welcomeText').textContent = welcomeText;
+                        document.getElementById('profile1Name').textContent = profile1Name;
+                        document.getElementById('profile2Name').textContent = profile2Name;
+                        document.getElementById('profile3Name').textContent = profile3Name;
+                    },
+                    mapToCapabilities: (config) => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => new Map([
+                        ["app_title", config.app_title || defaultConfig.app_title],
+                        ["welcome_text", config.welcome_text || defaultConfig.welcome_text],
+                        ["profile1_name", config.profile1_name || defaultConfig.profile1_name],
+                        ["profile2_name", config.profile2_name || defaultConfig.profile2_name],
+                        ["profile3_name", config.profile3_name || defaultConfig.profile3_name]
+                    ])
+                });
+            }
+
+            setupDragAndDrop();
+        }
+
+        // Navigation functions
+        function showHome() {
+            hideAllScreens();
+            document.getElementById('homeScreen').classList.remove('hidden');
+            document.getElementById('homeScreen').classList.add('flex');
+        }
+
+        function showChapterMenu() {
+            hideAllScreens();
+            document.getElementById('chapterScreen').classList.remove('hidden');
+            document.getElementById('chapterScreen').classList.add('flex');
+        }
+
+        function showChapterDetail(chapterId, chapterName, icon) {
+            currentChapter = chapterId;
+            hideAllScreens();
+            document.getElementById('chapterDetailScreen').classList.remove('hidden');
+            document.getElementById('chapterDetailScreen').classList.add('flex');
+            document.getElementById('chapterTitle').textContent = chapterName;
+            document.getElementById('chapterIcon').textContent = icon;
+        }
+
+        function showSection(sectionType) {
+            currentSection = sectionType;
+            hideAllScreens();
+            document.getElementById('sectionScreen').classList.remove('hidden');
+            document.getElementById('sectionScreen').classList.add('flex');
+            
+            const sectionTitles = {
+                'mufrodat': 'Mufrodat (Kosakata)',
+                'hiwar': 'Hiwar (Video Percakapan)',
+                'audio': 'Audio',
+                'materi': 'Materi Teks'
+            };
+            
+            document.getElementById('sectionTitle').textContent = sectionTitles[sectionType];
+            updateUploadHint();
+            updateUrlSection();
+            renderFiles();
+        }
+
+        function showEvaluation() {
+            hideAllScreens();
+            document.getElementById('evaluationScreen').classList.remove('hidden');
+            document.getElementById('evaluationScreen').classList.add('flex');
+        }
+
+        function showEvaluationDetail(babId, babName, icon) {
+            currentEvalBab = babId;
+            hideAllScreens();
+            document.getElementById('evaluationDetailScreen').classList.remove('hidden');
+            document.getElementById('evaluationDetailScreen').classList.add('flex');
+            document.getElementById('evalTitle').textContent = `Evaluasi ${babName}`;
+            document.getElementById('evalIcon').textContent = icon;
+            renderEvaluationLinks();
+        }
+
+        function showProfile() {
+            hideAllScreens();
+            document.getElementById('profileScreen').classList.remove('hidden');
+            document.getElementById('profileScreen').classList.add('flex');
+        }
+
+        function goBackToChapter() {
+            hideAllScreens();
+            document.getElementById('chapterDetailScreen').classList.remove('hidden');
+            document.getElementById('chapterDetailScreen').classList.add('flex');
+        }
+
+        function hideAllScreens() {
+            const screens = ['homeScreen', 'chapterScreen', 'chapterDetailScreen', 'sectionScreen', 'evaluationScreen', 'evaluationDetailScreen', 'profileScreen'];
+            screens.forEach(screenId => {
+                const screen = document.getElementById(screenId);
+                screen.classList.add('hidden');
+                screen.classList.remove('flex');
+            });
+        }
+
+        // Upload management
+        function updateUploadHint() {
+            const uploadHint = document.getElementById('uploadHint');
+            const fileInput = document.getElementById('fileInput');
+            
+            switch(currentSection) {
+                case 'mufrodat':
+                case 'materi':
+                    uploadHint.textContent = 'Upload gambar (JPG, PNG, GIF)';
+                    fileInput.accept = 'image/*';
+                    break;
+                case 'hiwar':
+                    uploadHint.textContent = 'Upload video (MP4, AVI, MOV) atau masukkan URL';
+                    fileInput.accept = 'video/*';
+                    break;
+                case 'audio':
+                    uploadHint.textContent = 'Upload audio (MP3, WAV, OGG) atau masukkan URL';
+                    fileInput.accept = 'audio/*';
+                    break;
+            }
+        }
+
+        function updateUrlSection() {
+            const urlSection = document.getElementById('urlSection');
+            if (currentSection === 'hiwar' || currentSection === 'audio') {
+                urlSection.classList.remove('hidden');
+            } else {
+                urlSection.classList.add('hidden');
+            }
+        }
+
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload({ target: { files: files } });
+                }
+            });
+        }
+
+        async function handleFileUpload(event) {
+            if (recordCount >= 999) {
+                showMessage("Batas maksimum 999 file telah tercapai. Silakan hapus beberapa file terlebih dahulu.", "error");
+                return;
+            }
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            const validTypes = getValidFileTypes();
+            if (!validTypes.some(type => file.type.startsWith(type))) {
+                showMessage("Tipe file tidak sesuai dengan section ini", "error");
+                return;
+            }
+
+            showUploadProgress();
+
+            // Simulate upload progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress > 90) progress = 90;
+                updateProgressBar(progress);
+            }, 200);
+
+            // Create file data
+            const fileData = {
+                id: Date.now().toString(),
+                type: 'file',
+                bab: currentChapter,
+                section: currentSection,
+                fileName: file.name,
+                fileUrl: URL.createObjectURL(file),
+                fileType: file.type,
+                createdAt: new Date().toISOString()
+            };
+
+            setTimeout(async () => {
+                clearInterval(progressInterval);
+                updateProgressBar(100);
+
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create(fileData);
+                    
+                    if (result.isOk) {
+                        showMessage("File berhasil diupload!", "success");
+                        document.getElementById('fileInput').value = '';
+                    } else {
+                        showMessage("Gagal mengupload file. Silakan coba lagi.", "error");
+                    }
+                }
+
+                hideUploadProgress();
+            }, 1500);
+        }
+
+        async function handleUrlUpload() {
+            if (recordCount >= 999) {
+                showMessage("Batas maksimum 999 file telah tercapai. Silakan hapus beberapa file terlebih dahulu.", "error");
+                return;
+            }
+
+            const url = document.getElementById('urlInput').value.trim();
+            if (!url) {
+                showMessage("Mohon masukkan URL yang valid", "error");
+                return;
+            }
+
+            showUploadProgress();
+
+            // Create URL data
+            const urlData = {
+                id: Date.now().toString(),
+                type: 'url',
+                bab: currentChapter,
+                section: currentSection,
+                fileName: `Link ${currentSection}`,
+                fileUrl: url,
+                fileType: currentSection === 'hiwar' ? 'video/url' : 'audio/url',
+                createdAt: new Date().toISOString()
+            };
+
+            setTimeout(async () => {
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.create(urlData);
+                    
+                    if (result.isOk) {
+                        showMessage("URL berhasil diupload!", "success");
+                        document.getElementById('urlInput').value = '';
+                    } else {
+                        showMessage("Gagal mengupload URL. Silakan coba lagi.", "error");
+                    }
+                }
+
+                hideUploadProgress();
+            }, 1000);
+        }
+
+        function getValidFileTypes() {
+            switch(currentSection) {
+                case 'mufrodat':
+                case 'materi':
+                    return ['image'];
+                case 'hiwar':
+                    return ['video'];
+                case 'audio':
+                    return ['audio'];
+                default:
+                    return [];
+            }
+        }
+
+        function showUploadProgress() {
+            document.getElementById('uploadProgress').classList.remove('hidden');
+        }
+
+        function hideUploadProgress() {
+            document.getElementById('uploadProgress').classList.add('hidden');
+            updateProgressBar(0);
+        }
+
+        function updateProgressBar(progress) {
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        async function deleteFile(file) {
+            // Show inline confirmation
+            const fileElement = document.querySelector(`[data-file-id="${file.id}"]`);
+            const deleteBtn = fileElement.querySelector('.delete-btn');
+            const originalContent = deleteBtn.innerHTML;
+            
+            deleteBtn.innerHTML = 'Yakin Hapus?';
+            deleteBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            deleteBtn.classList.add('bg-orange-500', 'hover:bg-orange-600');
+            
+            // Add cancel button
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = 'Batal';
+            cancelBtn.className = 'ml-2 bg-gray-500 hover:bg-gray-600 text-white text-xs px-2 py-1 rounded transition duration-200';
+            cancelBtn.onclick = () => {
+                deleteBtn.innerHTML = originalContent;
+                deleteBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+                deleteBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                cancelBtn.remove();
+                deleteBtn.onclick = () => deleteFile(file);
+            };
+            
+            deleteBtn.parentNode.appendChild(cancelBtn);
+            
+            // Confirm delete
+            deleteBtn.onclick = async () => {
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = 'Menghapus...';
+                
+                if (window.dataSdk) {
+                    const result = await window.dataSdk.delete(file);
+                    
+                    if (result.isOk) {
+                        showMessage("File berhasil dihapus!", "success");
+                    } else {
+                        showMessage("Gagal menghapus file. Silakan coba lagi.", "error");
+                        deleteBtn.disabled = false;
+                        deleteBtn.innerHTML = originalContent;
+                        deleteBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
+                        deleteBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                        cancelBtn.remove();
+                        deleteBtn.onclick = () => deleteFile(file);
+                    }
+                }
+            };
+        }
+
+        // Enhanced media player functions
+        function createCustomVideoPlayer(file) {
+            const playerId = `video-${file.id}`;
+            return `
+                <div class="custom-video-player" id="${playerId}">
+                    <video 
+                        id="video-element-${file.id}" 
+                        class="w-full h-48 bg-black"
+                        preload="metadata"
+                        onloadedmetadata="initVideoPlayer('${file.id}')"
+                        onerror="handleMediaError('${file.id}', 'video')">
+                        <source src="${file.fileUrl}" type="${file.fileType}">
+                        Browser Anda tidak mendukung video.
+                    </video>
+                    <div class="video-overlay">
+                        <div class="flex items-center gap-3">
+                            <button onclick="toggleVideoPlay('${file.id}')" class="play-btn" id="video-play-btn-${file.id}">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </button>
+                            <div class="progress-bar" onclick="seekVideo(event, '${file.id}')">
+                                <div class="progress-fill" id="video-progress-${file.id}"></div>
+                            </div>
+                            <div class="time-display" id="video-time-${file.id}">0:00 / 0:00</div>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider" 
+                                   onchange="setVideoVolume('${file.id}', this.value)">
+                        </div>
+                    </div>
+                </div>
+                ${file.type === 'url' ? `<div class="link-preview"><a href="${file.fileUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 text-sm">🔗 Buka Link Asli</a></div>` : ''}
+            `;
+        }
+
+        function createCustomAudioPlayer(file) {
+            const playerId = `audio-${file.id}`;
+            return `
+                <div class="media-item">
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-gray-700">🎵 ${file.fileName}</span>
+                            ${file.type === 'url' ? `<a href="${file.fileUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 text-xs">Buka Link</a>` : ''}
+                        </div>
+                        <audio 
+                            id="audio-element-${file.id}" 
+                            preload="metadata"
+                            onloadedmetadata="initAudioPlayer('${file.id}')"
+                            onerror="handleMediaError('${file.id}', 'audio')"
+                            style="display: none;">
+                            <source src="${file.fileUrl}" type="${file.fileType}">
+                        </audio>
+                        <div class="media-controls">
+                            <button onclick="toggleAudioPlay('${file.id}')" class="play-btn" id="audio-play-btn-${file.id}">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </button>
+                            <div class="progress-bar" onclick="seekAudio(event, '${file.id}')">
+                                <div class="progress-fill" id="audio-progress-${file.id}"></div>
+                            </div>
+                            <div class="time-display" id="audio-time-${file.id}">0:00 / 0:00</div>
+                            <input type="range" min="0" max="100" value="50" class="volume-slider" 
+                                   onchange="setAudioVolume('${file.id}', this.value)">
+                        </div>
+                        <div id="audio-error-${file.id}" style="display:none;" class="text-red-500 text-xs text-center py-2">Audio gagal dimuat</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initVideoPlayer(fileId) {
+            const video = document.getElementById(`video-element-${fileId}`);
+            if (!video) return;
+
+            video.addEventListener('timeupdate', () => updateVideoProgress(fileId));
+            video.addEventListener('ended', () => {
+                const playBtn = document.getElementById(`video-play-btn-${fileId}`);
+                playBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                playBtn.classList.remove('playing');
+            });
+
+            mediaPlayers.set(`video-${fileId}`, video);
+        }
+
+        function initAudioPlayer(fileId) {
+            const audio = document.getElementById(`audio-element-${fileId}`);
+            if (!audio) return;
+
+            audio.addEventListener('timeupdate', () => updateAudioProgress(fileId));
+            audio.addEventListener('ended', () => {
+                const playBtn = document.getElementById(`audio-play-btn-${fileId}`);
+                playBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                playBtn.classList.remove('playing');
+            });
+
+            mediaPlayers.set(`audio-${fileId}`, audio);
+        }
+
+        function toggleVideoPlay(fileId) {
+            const video = document.getElementById(`video-element-${fileId}`);
+            const playBtn = document.getElementById(`video-play-btn-${fileId}`);
+            
+            if (video.paused) {
+                video.play();
+                playBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                playBtn.classList.add('playing');
+            } else {
+                video.pause();
+                playBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                playBtn.classList.remove('playing');
+            }
+        }
+
+        function toggleAudioPlay(fileId) {
+            const audio = document.getElementById(`audio-element-${fileId}`);
+            const playBtn = document.getElementById(`audio-play-btn-${fileId}`);
+            
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+                playBtn.classList.add('playing');
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+                playBtn.classList.remove('playing');
+            }
+        }
+
+        function updateVideoProgress(fileId) {
+            const video = document.getElementById(`video-element-${fileId}`);
+            const progressFill = document.getElementById(`video-progress-${fileId}`);
+            const timeDisplay = document.getElementById(`video-time-${fileId}`);
+            
+            if (video && progressFill && timeDisplay) {
+                const progress = (video.currentTime / video.duration) * 100;
+                progressFill.style.width = progress + '%';
+                
+                const currentTime = formatTime(video.currentTime);
+                const duration = formatTime(video.duration);
+                timeDisplay.textContent = `${currentTime} / ${duration}`;
+            }
+        }
+
+        function updateAudioProgress(fileId) {
+            const audio = document.getElementById(`audio-element-${fileId}`);
+            const progressFill = document.getElementById(`audio-progress-${fileId}`);
+            const timeDisplay = document.getElementById(`audio-time-${fileId}`);
+            
+            if (audio && progressFill && timeDisplay) {
+                const progress = (audio.currentTime / audio.duration) * 100;
+                progressFill.style.width = progress + '%';
+                
+                const currentTime = formatTime(audio.currentTime);
+                const duration = formatTime(audio.duration);
+                timeDisplay.textContent = `${currentTime} / ${duration}`;
+            }
+        }
+
+        function seekVideo(event, fileId) {
+            const video = document.getElementById(`video-element-${fileId}`);
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            
+            if (video && video.duration) {
+                video.currentTime = percentage * video.duration;
+            }
+        }
+
+        function seekAudio(event, fileId) {
+            const audio = document.getElementById(`audio-element-${fileId}`);
+            const progressBar = event.currentTarget;
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            
+            if (audio && audio.duration) {
+                audio.currentTime = percentage * audio.duration;
+            }
+        }
+
+        function setVideoVolume(fileId, volume) {
+            const video = document.getElementById(`video-element-${fileId}`);
+            if (video) {
+                video.volume = volume / 100;
+            }
+        }
+
+        function setAudioVolume(fileId, volume) {
+            const audio = document.getElementById(`audio-element-${fileId}`);
+            if (audio) {
+                audio.volume = volume / 100;
+            }
+        }
+
+        function handleMediaError(fileId, type) {
+            const errorElement = document.getElementById(`${type}-error-${fileId}`);
+            const mediaElement = document.getElementById(`${type}-element-${fileId}`);
+            
+            if (errorElement && mediaElement) {
+                mediaElement.style.display = 'none';
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function renderFiles() {
+            const filesList = document.getElementById('filesList');
+            if (!filesList) return;
+            
+            const filteredFiles = files.filter(f => 
+                f.bab === currentChapter && f.section === currentSection
+            );
+
+            if (filteredFiles.length === 0) {
+                filesList.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                        </svg>
+                        <p>Belum ada file yang diupload</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filesList.innerHTML = filteredFiles.map(file => {
+                let mediaDisplay = '';
+                
+                if (file.fileType.startsWith('image')) {
+                    mediaDisplay = `
+                        <div class="media-item mb-4">
+                            <img src="${file.fileUrl}" alt="${file.fileName}" class="w-full h-48 object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div style="display:none;" class="p-4 text-center text-red-500">Gambar gagal dimuat</div>
+                        </div>
+                    `;
+                } else if (file.fileType.startsWith('video') || file.fileType === 'video/url') {
+                    mediaDisplay = createCustomVideoPlayer(file);
+                } else if (file.fileType.startsWith('audio') || file.fileType === 'audio/url') {
+                    mediaDisplay = createCustomAudioPlayer(file);
+                }
+
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4" data-file-id="${file.id}">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800">${file.fileName}</h4>
+                                <span class="inline-block bg-emerald-100 text-emerald-800 text-xs px-2 py-1 rounded mt-1">
+                                    ${file.type === 'url' ? 'LINK' : 'FILE'}
+                                </span>
+                            </div>
+                            <button onclick="deleteFile(${JSON.stringify(file).replace(/"/g, '&quot;')})" 
+                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded transition duration-200">
+                                Hapus
+                            </button>
+                        </div>
+                        ${mediaDisplay}
+                        <p class="text-xs text-gray-400">
+                            Diupload: ${new Date(file.createdAt).toLocaleDateString('id-ID')}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Evaluation management
+        async function handleEvalLinkUpload() {
+            if (recordCount >= 999) {
+                showMessage("Batas maksimum 999 item telah tercapai. Silakan hapus beberapa item terlebih dahulu.", "error");
+                return;
+            }
+
+            const url = document.getElementById('evalLinkInput').value.trim();
+            if (!url) {
+                showMessage("Mohon masukkan URL evaluasi", "error");
+                return;
+            }
+
+            // Show loading state
+            const uploadBtn = document.getElementById('evalUploadBtn');
+            const uploadText = document.getElementById('evalUploadText');
+            const uploadSpinner = document.getElementById('evalUploadSpinner');
+            
+            uploadBtn.disabled = true;
+            uploadText.textContent = 'Mengupload...';
+            uploadSpinner.classList.remove('hidden');
+
+            const evalData = {
+                id: Date.now().toString(),
+                type: 'evaluation',
+                bab: currentEvalBab,
+                section: 'evaluation',
+                fileName: 'Link Evaluasi',
+                fileUrl: url,
+                fileType: 'link',
+                createdAt: new Date().toISOString()
+            };
+
+            if (window.dataSdk) {
+                const result = await window.dataSdk.create(evalData);
+                
+                if (result.isOk) {
+                    document.getElementById('evalLinkInput').value = '';
+                    showMessage("Link evaluasi berhasil diupload!", "success");
+                } else {
+                    showMessage("Gagal mengupload link evaluasi. Silakan coba lagi.", "error");
+                }
+            }
+
+            // Reset loading state
+            uploadBtn.disabled = false;
+            uploadText.textContent = 'Upload';
+            uploadSpinner.classList.add('hidden');
+        }
+
+        function renderEvaluationLinks() {
+            const evaluationList = document.getElementById('evaluationList');
+            if (!evaluationList) return;
+            
+            const filteredEvals = files.filter(f => 
+                f.type === 'evaluation' && f.bab === currentEvalBab
+            );
+
+            if (filteredEvals.length === 0) {
+                evaluationList.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H6.9C4.01 7 1.9 9.11 1.9 12s2.11 5 5 5h4v-1.9H6.9c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9.1-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.89 0 5-2.11 5-5s-2.11-5-5-5z"/>
+                        </svg>
+                        <p>Belum ada link evaluasi yang diupload</p>
+                    </div>
+                `;
+                return;
+            }
+
+            evaluationList.innerHTML = filteredEvals.map(evaluation => {
+                return `
+                    <div class="border border-gray-200 rounded-lg p-4" data-file-id="${evaluation.id}">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-800 mb-2">${evaluation.fileName}</h4>
+                                <span class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded mb-2">LINK</span>
+                                <div class="mb-2">
+                                    <a href="${evaluation.fileUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 text-sm underline">
+                                        🔗 Buka Link Evaluasi
+                                    </a>
+                                </div>
+                                <p class="text-xs text-gray-400">
+                                    Diupload: ${new Date(evaluation.createdAt).toLocaleDateString('id-ID')}
+                                </p>
+                            </div>
+                            <button onclick="deleteFile(${JSON.stringify(evaluation).replace(/"/g, '&quot;')})" 
+                                    class="delete-btn bg-red-500 hover:bg-red-600 text-white text-xs px-3 py-1 rounded transition duration-200 ml-4">
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Profile management
+        function editProfile(profileNumber) {
+            currentEditingProfile = profileNumber;
+            const currentName = document.getElementById(`profile${profileNumber}Name`).textContent;
+            
+            document.getElementById('profileName').value = currentName;
+            document.getElementById('profileImage').value = profileImages[profileNumber] || '';
+            document.getElementById('profileEditModal').classList.remove('hidden');
+        }
+
+        function hideProfileEdit() {
+            document.getElementById('profileEditModal').classList.add('hidden');
+            currentEditingProfile = 0;
+        }
+
+        async function handleProfileEdit(event) {
+            event.preventDefault();
+            
+            const newName = document.getElementById('profileName').value.trim();
+            const imageUrl = document.getElementById('profileImage').value.trim();
+            
+            if (!newName) {
+                showMessage("Mohon masukkan nama pengajar", "error");
+                return;
+            }
+
+            // Update config
+            const configKey = `profile${currentEditingProfile}_name`;
+            const updateData = {};
+            updateData[configKey] = newName;
+            
+            if (window.elementSdk) {
+                await window.elementSdk.setConfig(updateData);
+            }
+
+            // Update display immediately
+            document.getElementById(`profile${currentEditingProfile}Name`).textContent = newName;
+            
+            // Update profile image if provided
+            if (imageUrl) {
+                profileImages[currentEditingProfile] = imageUrl;
+                const profileImageContainer = document.getElementById(`profile${currentEditingProfile}Image`);
+                profileImageContainer.innerHTML = `<img src="${imageUrl}" alt="Profile ${currentEditingProfile}" class="w-full h-full object-cover rounded-full" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24" style="display:none;">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>`;
+            }
+            
+            hideProfileEdit();
+            showMessage("Profil berhasil diperbarui!", "success");
+        }
+
+        // Exit functions
+        function showExitConfirm() {
+            document.getElementById('exitModal').classList.remove('hidden');
+        }
+
+        function hideExitConfirm() {
+            document.getElementById('exitModal').classList.add('hidden');
+        }
+
+        function exitApp() {
+            hideExitConfirm();
+            const exitMessage = document.createElement('div');
+            exitMessage.className = 'fixed inset-0 bg-emerald-600 flex items-center justify-center z-50';
+            exitMessage.innerHTML = `
+                <div class="text-center text-white">
+                    <svg class="w-16 h-16 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <h2 class="text-2xl font-bold mb-2">Terima Kasih!</h2>
+                    <p>Sampai jumpa di pembelajaran berikutnya</p>
+                </div>
+            `;
+            document.body.appendChild(exitMessage);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-500' : 
+                           type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+            
+            messageDiv.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+            messageDiv.textContent = message;
+            
+            document.body.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                messageDiv.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 300);
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('profileEditForm').addEventListener('submit', handleProfileEdit);
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99f57c36e4c25682',t:'MTc2MzI4MDM0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
